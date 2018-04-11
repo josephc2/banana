@@ -1,8 +1,8 @@
-#include </lib/SFML/Window.hpp>
+#include <SFML/Graphics.hpp> 
 
 int main()
 {
-    sf::Window window(sf::VideoMode(800, 600), "My window");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "My window", sf::Style::Close | sf::Style::Titlebar);
 
     // run the program as long as the window is open
     while (window.isOpen())

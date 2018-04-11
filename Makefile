@@ -1,3 +1,4 @@
-window: lib/SFML/Window.hpp src/window.cpp
-				g++ -o ./bin/test-window.out -I"lib/" src/window.cpp
-				./bin/test-window.out 
+window: src/window.cpp lib/SFML/Graphics.hpp
+				g++ -c src/window.cpp -I"./lib/" -o src/window.o
+				g++ src/window.o -I"./lib/"  -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system 
+
