@@ -4,11 +4,12 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "Banana Defense", sf::Style::Close | sf::Style::Titlebar);
 
-	sf::Texture t1, t2;
+	sf::Texture t1, t2, t3;
 	t1.loadFromFile("images/Turret.png");
 	t2.loadFromFile("images/map.png");
+	t3.loadFromFile("images/manloloyo_head.png");
 
-	sf::Sprite sTurret(t1), sBackground(t2);
+	sf::Sprite sTurret(t1), sBackground(t2), sHead(t3);
 
 	bool isMove=false;
 	float dx=0, dy=0;
@@ -53,6 +54,7 @@ int main()
 		window.clear();
 		window.draw(sBackground);
 		window.draw(sTurret);
+		window.draw(sHead);
 		window.display();
 	}
 	return 0;
