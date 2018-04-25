@@ -5,6 +5,7 @@
 #include "animation.cpp"
 #include "entity.cpp"
 #include "head.cpp"
+#include "turret.cpp"
 
 #define MAX_X 1920
 #define MAX_Y 1080
@@ -14,13 +15,18 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(MAX_X, MAX_Y), "Banana Defense", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
-	sf::Texture t1, t2, t3;
+	sf::Texture t0, t1, t2, t3;
+	t0.loadFromFile("images/Turret.png");
 	t1.loadFromFile("images/Turret.png");
 	t2.loadFromFile("images/map.png");
 	t3.loadFromFile("images/manloloyo.png");
 
-	sf::Sprite sTurret(t1), sBackground(t2);
+	sf::Sprite sTurret(t1), sTurretBackup(t0), sBackground(t2);
+	sTurret.setPosition(1650, 250);
+	sTurretBackup.setPosition(1650, 250);
+
 	animation sHead(t3, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
+	animation sTurretPlaced(t1, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 
 	std::list<entity*> entities;
 	for(int i=0;i<20;i++)
@@ -58,6 +64,12 @@ int main()
 				printf("Button was released\n");
 				if(event.key.code == sf::Mouse::Left)
 					isMove=false;
+					//std::cout << "Turret x position: " << sTurret.getPosition().x << std::endl;
+					//std::cout << "Turret y position: " << sTurret.getPosition().y << std::endl;
+					turret *t = new turret();
+					t->settings(sTurretPlaced, sTurret.getPosition().x + 240, sTurret.getPosition().y + 135, 100);
+					entities.push_back(t);
+					sTurret.setPosition(1650, 250);
 			}
 			if (isMove) sTurret.setPosition(pos.x-dx, pos.y-dy);
 		}
@@ -74,6 +86,7 @@ int main()
 		window.clear();
 		window.draw(sBackground);
 		window.draw(sTurret);
+		window.draw(sTurretBackup);
 		for(auto i:entities)
 			i->draw(window);
 		window.display();
