@@ -1,7 +1,6 @@
 class head: public entity{
 	public:
 		int moveMode = 0;
-		bool isOutofMap = 0;
 		head(){
 			dx = 2;
 			dy = 0;
