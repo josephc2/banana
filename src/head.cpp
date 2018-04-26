@@ -11,6 +11,9 @@ class head: public entity{
 		void update(){
 			x+=dx;
 			y+=dy;
+			if(x > 1700){
+				isAlive = 0;
+			}
 			//std::cout << "moveMode is " << moveMode << std::endl;
 			//first straight path, go up
 			if(moveMode == 0){

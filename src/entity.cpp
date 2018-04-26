@@ -25,7 +25,6 @@ class entity{
 		void draw(sf::RenderWindow &app){
 			anim.sprite.setPosition(x,y);
 			app.draw(anim.sprite);
-
 			sf::CircleShape circle(R);
 			circle.setPosition(x,y);
 			circle.setOrigin(R,R);

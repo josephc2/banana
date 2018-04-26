@@ -89,11 +89,12 @@ int main()
 			}
 			for(auto i=entities.begin();i!=entities.end();){
 				entity *e = *i;
-
 				e->update();
 				e->anim.update();
-
-				if (e->isAlive==false) {i=entities.erase(i); delete e;}
+				if (e->isAlive==false) {
+					i=entities.erase(i);
+					delete e;
+				}
 				else i++;
 			}
 			// draw
