@@ -21,7 +21,22 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(MAX_X, MAX_Y), "Banana Defense", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
-	sf::Texture t0, t1, t2, t3, t4, t5, t6;
+	sf::Texture t0, t1, t2, t3, t4, t5, t6, t7;
+  sf::Font font;
+  font.loadFromFile("font/big_noodle_titling.ttf");
+
+  // for bank system
+  sf::Text text("100", font);
+  text.setCharacterSize(100);
+  text.setColor(sf::Color::White);
+  text.setPosition(1700,820);
+
+  // for life system
+  sf::Text live("10", font);
+  live.setCharacterSize(100);
+  live.setColor(sf::Color::White);
+  live.setPosition(1350,850);
+
 	t0.loadFromFile("images/Turret.png");
 	t1.loadFromFile("images/Turret.png");
 	t2.loadFromFile("images/map.png");
@@ -29,11 +44,13 @@ int main()
 	t4.loadFromFile("images/title.jpg");
 	t5.loadFromFile("images/banner.png");
 	t6.loadFromFile("images/tep.png");
+  t7.loadFromFile("images/banana-hi.png");
 
-	sf::Sprite sTurret(t1), sTurretBackup(t0), sBackground(t2), sTitle(t4), sBanner(t5);
+	sf::Sprite sTurret(t1), sTurretBackup(t0), sBackground(t2), sTitle(t4), sBanner(t5), sBanana(t7);
 	sTurret.setPosition(1650, 250);
 	sTurretBackup.setPosition(1650, 250);
-	sBanner.setPosition(700,500);
+	sBanner.setPosition(525,500);
+  sBanana.setPosition(1350,860);
 
 	animation sHead(t3, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 	animation sBossHead(t6, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
@@ -49,6 +66,7 @@ int main()
 	int waveMode = 0;
 	int liveCheck = 0;
 	int lifeleft = 10;
+  int bank = 100;
 
 	// run the program as long as the window is open
 	while (window.isOpen()){
@@ -83,9 +101,12 @@ int main()
 					isMove=false;
 					// std::cout << "Turret x position: " << sTurret.getPosition().x << std::endl;
 					// std::cout << "Turret y position: " << sTurret.getPosition().y << std::endl;
-					turret *t = new turret();
-					t->settings(sTurretPlaced, sTurret.getPosition().x + 240, sTurret.getPosition().y + 135, 100);
-					entities.push_back(t);
+          if(bank >= 100){
+            turret *t = new turret();
+            t->settings(sTurretPlaced, sTurret.getPosition().x + 240, sTurret.getPosition().y + 135, 100);
+            entities.push_back(t);
+            bank-=100;
+          }
 					sTurret.setPosition(1650, 250);
 			}
 			if (isMove) sTurret.setPosition(pos.x-dx, pos.y-dy);
@@ -145,6 +166,10 @@ int main()
 					i=entities.erase(i);
 					delete e;
 					lifeleft--;
+          // ##############################################
+          // remember to remove this for full game
+          bank += 100;
+          // #############################################
 					std::cout << "You have " << lifeleft << "lives left" << std::endl;
 				}
 				else i++;
@@ -154,6 +179,16 @@ int main()
 			window.draw(sBackground);
 			window.draw(sTurret);
 			window.draw(sTurretBackup);
+      window.draw(sBanana);
+
+      // update money in the bank
+      text.setString(std::to_string(bank));
+      window.draw(text);
+
+      // update number of lives left
+      live.setString(std::to_string(lifeleft));
+      window.draw(live);
+
 			if(gamePause)
 				window.draw(sBanner);
 			for(auto i:entities)
