@@ -15,6 +15,15 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(MAX_X, MAX_Y), "Banana Defense", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
+	//Bank Amount Text
+	sf::Font font;
+	font.loadFromFile("big_noodle_titling.ttf");
+	int bank = 100;
+	sf::Text text(bank, font);
+	text.setCharacterSize(30);
+	text.setColor(sf::Color::White);
+
+	//Images
 	sf::Texture t0, t1, t2, t3, t4;
 	t0.loadFromFile("images/Turret.png");
 	t1.loadFromFile("images/Turret.png");
@@ -22,6 +31,7 @@ int main()
 	t3.loadFromFile("images/manloloyo.png");
 	t4.loadFromFile("images/title.jpg");
 
+	//Sprites
 	sf::Sprite sTurret(t1), sTurretBackup(t0), sBackground(t2), sTitle(t4);
 	sTurret.setPosition(1650, 250);
 	sTurretBackup.setPosition(1650, 250);
@@ -94,6 +104,7 @@ int main()
 				if (e->isAlive==false) {
 					i=entities.erase(i);
 					delete e;
+					bank += 100;
 				}
 				else i++;
 			}
@@ -102,6 +113,7 @@ int main()
 			window.draw(sBackground);
 			window.draw(sTurret);
 			window.draw(sTurretBackup);
+			window.draw(text);
 			for(auto i:entities)
 				i->draw(window);
 			window.display();
