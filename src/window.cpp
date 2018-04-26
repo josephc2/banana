@@ -21,13 +21,14 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(MAX_X, MAX_Y), "Banana Defense", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
-	sf::Texture t0, t1, t2, t3, t4, t5;
+	sf::Texture t0, t1, t2, t3, t4, t5, t6;
 	t0.loadFromFile("images/Turret.png");
 	t1.loadFromFile("images/Turret.png");
 	t2.loadFromFile("images/map.png");
 	t3.loadFromFile("images/manloloyo.png");
 	t4.loadFromFile("images/title.jpg");
 	t5.loadFromFile("images/banner.png");
+	t6.loadFromFile("images/tep.png");
 
 	sf::Sprite sTurret(t1), sTurretBackup(t0), sBackground(t2), sTitle(t4), sBanner(t5);
 	sTurret.setPosition(1650, 250);
@@ -35,6 +36,7 @@ int main()
 	sBanner.setPosition(700,500);
 
 	animation sHead(t3, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
+	animation sBossHead(t6, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 	animation sTurretPlaced(t1, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 
 	std::list<entity*> entities;
@@ -112,7 +114,10 @@ int main()
 				if(numHeads < 10){
 					if(count % 75 == 0){
 						head *h = new head();
-						h->settings(sHead, 5, 650, 100);
+						if(numHeads % 6 == 0)
+							h->settings(sBossHead, 5, 650, 100);
+						else
+							h->settings(sHead, 5, 650, 100);
 						entities.push_back(h);
 						numHeads++;
 					}
