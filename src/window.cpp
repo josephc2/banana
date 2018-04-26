@@ -48,6 +48,7 @@ int main()
 	int numHeads = 0;
 	int waveMode = 0;
 	int liveCheck = 0;
+	int lifeleft = 10;
 
 	// run the program as long as the window is open
 	while (window.isOpen()){
@@ -143,6 +144,8 @@ int main()
 				if (e->isAlive==false) {
 					i=entities.erase(i);
 					delete e;
+					lifeleft--;
+					std::cout << "You have " << lifeleft << "lives left" << std::endl;
 				}
 				else i++;
 			}
@@ -172,6 +175,10 @@ int main()
 					numHeads = 0;
 					waveMode++;
 					gamePause=true;
+				}
+				if(lifeleft == 0){
+					std::cout << "You lose!" << std::endl;
+					window.close();
 				}
 			}
 		}
