@@ -10,6 +10,9 @@
 #define MAX_X 1920
 #define MAX_Y 1080
 
+#define X_OFFSET 240
+#define Y_OFFSET 135
+
 bool isCollide(entity *a,entity *b){
   return (b->x - a->x)*(b->x - a->x)+
          (b->y - a->y)*(b->y - a->y)<
@@ -103,7 +106,7 @@ int main()
 					// std::cout << "Turret y position: " << sTurret.getPosition().y << std::endl;
           if(bank >= 100){
             turret *t = new turret();
-            t->settings(sTurretPlaced, sTurret.getPosition().x + 240, sTurret.getPosition().y + 135, 100);
+            t->settings(sTurretPlaced, sTurret.getPosition().x + X_OFFSET, sTurret.getPosition().y + Y_OFFSET, 100);
             entities.push_back(t);
             bank-=100;
           }
