@@ -6,6 +6,7 @@
 #include "entity.cpp"
 #include "head.cpp"
 #include "turret.cpp"
+#include "bullet.cpp"
 
 #define MAX_X 1920
 #define MAX_Y 1080
@@ -24,7 +25,7 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(MAX_X, MAX_Y), "Banana Defense", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
-	sf::Texture t0, t1, t2, t3, t4, t5, t6, t7;
+	sf::Texture t0, t1, t2, t3, t4, t5, t6, t7, t8;
   sf::Font font;
   font.loadFromFile("font/big_noodle_titling.ttf");
 
@@ -48,6 +49,7 @@ int main()
 	t5.loadFromFile("images/banner.png");
 	t6.loadFromFile("images/tep.png");
   t7.loadFromFile("images/banana-hi.png");
+  t8.loadFromFile("images/bullet.png");
 
 	sf::Sprite sTurret(t1), sTurretBackup(t0), sBackground(t2), sTitle(t4), sBanner(t5), sBanana(t7);
 	sTurret.setPosition(1650, 250);
@@ -58,6 +60,7 @@ int main()
 	animation sHead(t3, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 	animation sBossHead(t6, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 	animation sTurretPlaced(t1, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
+  animation sBullet(t8, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 
 	std::list<entity*> entities;
 	bool gameStart=false;
@@ -67,6 +70,7 @@ int main()
 	int count = 0;
 	int numHeads = 0;
 	int waveMode = 0;
+  int bulletShoot = 0;
 	int liveCheck = 0;
 	int lifeleft = 10;
   int bank = 100;
@@ -106,7 +110,7 @@ int main()
 					// std::cout << "Turret y position: " << sTurret.getPosition().y << std::endl;
           if(bank >= 100){
             turret *t = new turret();
-            t->settings(sTurretPlaced, sTurret.getPosition().x + X_OFFSET, sTurret.getPosition().y + Y_OFFSET, 100);
+            t->settings(sTurretPlaced, sTurret.getPosition().x + X_OFFSET, sTurret.getPosition().y + Y_OFFSET, 0, 0, 100);
             entities.push_back(t);
             bank-=100;
           }
@@ -122,12 +126,43 @@ int main()
 		}
 		// actual game
 		if(gameStart){
+      // make thing go shoot
+      for(auto e:entities)
+          if(e->name == "turret"){
+            if(e->count % 30 == 0){
+              bullet *b = new bullet();
+              if (bulletShoot == 0)
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 0, 10);
+              if (bulletShoot == 1)
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 2, 10);
+              if (bulletShoot == 2)
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, 2, 10);
+              if (bulletShoot == 3)
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 2, 10);
+              if (bulletShoot == 4)
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 10);
+              if (bulletShoot == 5)
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, -2, 10);
+              if (bulletShoot == 6)
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, -2, 10);
+              if (bulletShoot == 7){
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, -2, 10);
+                bulletShoot = 0;
+              }
+              entities.push_back(b);
+              bulletShoot++;
+              e->count = 1;
+            }
+            else
+              e->count++;
+          }
+
 			// wave 0
 			if(waveMode == 0 && !gamePause){
 				if(numHeads < 5){
 					if(count % 75 == 0){
 						head *h = new head();
-						h->settings(sHead, 5, 650, 100);
+						h->settings(sHead, 5, 650, 2, 0, 10);
 						entities.push_back(h);
 						numHeads++;
 					}
@@ -140,9 +175,9 @@ int main()
 					if(count % 75 == 0){
 						head *h = new head();
 						if(numHeads % 6 == 0)
-							h->settings(sBossHead, 5, 650, 100);
+							h->settings(sBossHead, 5, 650, 2, 0, 10);
 						else
-							h->settings(sHead, 5, 650, 100);
+							h->settings(sHead, 5, 650, 2, 0, 10);
 						entities.push_back(h);
 						numHeads++;
 					}
@@ -151,29 +186,47 @@ int main()
 			}
 			// wave 2
 			if(waveMode == 2 && !gamePause){
-				if(numHeads < 20){
+        if(numHeads < 20){
 					if(count % 75 == 0){
 						head *h = new head();
-						h->settings(sHead, 5, 650, 100);
+						h->settings(sHead, 5, 650, 2, 0, 10);
 						entities.push_back(h);
 						numHeads++;
 					}
 					count++;
 				}
 			}
+
+      for(auto a:entities)
+        for(auto b:entities){
+          if(a->name == "head" && b->name=="bullet")
+            if(isCollide(a,b)){
+              a->isAlive=0;
+              b->isAlive=0;
+            }
+        }
+
 			for(auto i=entities.begin();i!=entities.end();){
 				entity *e = *i;
 				e->update();
 				e->anim.update();
+        if(e->name == "bullet"){
+          if(e->count > 100)
+            e->isAlive = 0;
+          else
+            e->count++;
+        }
 				if (e->isAlive==false) {
 					i=entities.erase(i);
 					delete e;
-					lifeleft--;
-          // ##############################################
-          // remember to remove this for full game
-          bank += 100;
-          // #############################################
-					std::cout << "You have " << lifeleft << "lives left" << std::endl;
+          if(e->name == "head"){
+            lifeleft--;
+            // ##############################################
+            // remember to remove this for full game
+            bank += 100;
+            // #############################################
+            std::cout << "You have " << lifeleft << "lives left" << std::endl;
+          }
 				}
 				else i++;
 			}
