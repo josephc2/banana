@@ -3,11 +3,11 @@ class turret: public entity{
 		turret(){
       dx = 0;
       dy = 0;
-			name = "Turret";
+			name = "turret";
 		}
 
 		void update(){
-			x+=dx;
-			y+=dy;
+			//count++;
+			//std::cout << "count " << this->count << std::endl;
 		}
 };

@@ -1,5 +1,6 @@
 class entity{
 	public:
+		int count;
 		float x;
 		float y;
 		float dx;
@@ -11,12 +12,15 @@ class entity{
 
 		entity(){
 			isAlive = 1;
+			count = 1;
 		}
 
-		void settings(animation &a,int X,int Y,int radius){
+		void settings(animation &a,int X,int Y,int dX, int dY, int radius){
 			anim = a;
 			x=X;
 			y=Y;
+			dx=dX;
+			dy=dY;
 			R = radius;
 		}
 
