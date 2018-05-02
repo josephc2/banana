@@ -76,8 +76,8 @@ int main()
 	int numBullet = 0;
 	int turretPlace = 0;
 	int interate = 0;
-	float locX[100], locY[100];
-	//float locX=0, locY=0;
+	//float locX[100], locY[100];
+	float locX=0, locY=0;
 
 	// run the program as long as the window is open
 	while (window.isOpen()){
@@ -124,17 +124,12 @@ int main()
 
 			if (isMove){
 				sTurret.setPosition(pos.x-dx, pos.y-dy);
-				if(interate != 1000){
-					interate++;
-				}
-				else{
-					turretPlace++;
-					for(int i =0; i < turretPlace; i++){
-						locX[i] =  sTurret.getPosition().x;
-						locY[i] =  sTurret.getPosition().y;
-					}
-					interate =0;
-				}
+
+						locX=  sTurret.getPosition().x;
+						locY =  sTurret.getPosition().y;
+
+					//interate =0;
+
 				std::cout <<"Count" <<std::endl;
 			}
 		}
@@ -152,17 +147,15 @@ int main()
 				if(fire = true){
 					//top bullet
 					Bullet *b = new Bullet();
-					for(int i =0; i < turretPlace; i++){
-						b->settings(sBulletshoot, locX[i] + 100, locY[i] - 80, 10);
+						b->settings(sBulletshoot, locX+ 100, locY - 80, 10);
 						entities.push_back(b);
-					}
 					std::cout << "Placed Turret" <<std::endl;
 					//bottom bullet
 					BulletUp *b1 = new BulletUp();
-					for(int i =0; i < turretPlace; i++){
-						b1->settings(sBulletshoot, locX[i] + 100, locY[i] + 80, 10);
+
+						b1->settings(sBulletshoot, locX + 100, locY+ 80, 10);
 						entities.push_back(b1);
-					}
+
 					std::cout << "Placed" <<std::endl;
 					fire = false;
 					counter = 0;
