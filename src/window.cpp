@@ -15,8 +15,8 @@
 #define Y_OFFSET 135
 
 bool isCollide(entity *a,entity *b){
-  return (b->x - a->x)*(b->x - a->x)+
-         (b->y - a->y)*(b->y - a->y)<
+  return (b->x+20 - a->x)*(b->x+20 - a->x)+
+         (b->y+60 - a->y)*(b->y+60 - a->y)<
          (a->R + b->R)*(a->R + b->R);
 }
 
@@ -28,7 +28,6 @@ int main()
 	sf::Texture t0, t1, t2, t3, t4, t5, t6, t7, t8;
   sf::Font font;
   font.loadFromFile("font/big_noodle_titling.ttf");
-
   // for bank system
   sf::Text text("100", font);
   text.setCharacterSize(100);
@@ -72,8 +71,9 @@ int main()
 	int waveMode = 0;
   int bulletShoot = 0;
 	int liveCheck = 0;
-	int lifeleft = 10;
-  int bank = 100;
+  int gameDone = 0;
+	int lifeleft = 100;
+  int bank = 1000;
 
 	// run the program as long as the window is open
 	while (window.isOpen()){
@@ -113,8 +113,9 @@ int main()
             t->settings(sTurretPlaced, sTurret.getPosition().x + X_OFFSET, sTurret.getPosition().y + Y_OFFSET, 0, 0, 100);
             entities.push_back(t);
             bank-=100;
+            	sTurret.setPosition(1650, 250);
           }
-					sTurret.setPosition(1650, 250);
+					//sTurret.setPosition(1650, 250);
 			}
 			if (isMove) sTurret.setPosition(pos.x-dx, pos.y-dy);
 		}
@@ -129,26 +130,27 @@ int main()
       // make thing go shoot
       for(auto e:entities)
           if(e->name == "turret"){
-            if(e->count % 30 == 0){
+            if(e->count % 50 == 0){
               bullet *b = new bullet();
               if (bulletShoot == 0)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 0, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 20);
               if (bulletShoot == 1)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 2, 20);
               if (bulletShoot == 2)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, 2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, 2, 20);
               if (bulletShoot == 3)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 2, 20);
               if (bulletShoot == 4)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 20);
               if (bulletShoot == 5)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, -2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, -2, 20);
               if (bulletShoot == 6)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, -2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, -2, 20);
               if (bulletShoot == 7){
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, -2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, -2, 20);
                 bulletShoot = 0;
-              }
+
+}
               entities.push_back(b);
               bulletShoot++;
               e->count = 1;
@@ -162,7 +164,7 @@ int main()
 				if(numHeads < 5){
 					if(count % 75 == 0){
 						head *h = new head();
-						h->settings(sHead, 5, 650, 2, 0, 10);
+						h->settings(sHead, 5, 650, 2, 0, 40);
 						entities.push_back(h);
 						numHeads++;
 					}
@@ -174,12 +176,14 @@ int main()
 				if(numHeads < 10){
 					if(count % 75 == 0){
 						head *h = new head();
+            bosshead *b = new bosshead();
 						if(numHeads % 6 == 0)
-							h->settings(sBossHead, 5, 650, 2, 0, 10);
+							b->settings(sBossHead, 5, 650, 4, 0, 40);
 						else
-							h->settings(sHead, 5, 650, 2, 0, 10);
+							h->settings(sHead, 5, 650, 2, 0, 40);
 						entities.push_back(h);
-						numHeads++;
+            entities.push_back(b);
+            numHeads++;
 					}
 					count++;
 				}
@@ -189,7 +193,7 @@ int main()
         if(numHeads < 20){
 					if(count % 75 == 0){
 						head *h = new head();
-						h->settings(sHead, 5, 650, 2, 0, 10);
+						h->settings(sHead, 5, 650, 2, 0, 40);
 						entities.push_back(h);
 						numHeads++;
 					}
@@ -198,7 +202,8 @@ int main()
 			}
 
       for(auto a:entities)
-        for(auto b:entities){
+        for(auto b:entities)
+          for(auto c:entities){
           if(a->name == "head" && b->name=="bullet")
             if(isCollide(a,b)){
               a->isAlive=0;
@@ -208,19 +213,24 @@ int main()
 
 			for(auto i=entities.begin();i!=entities.end();){
 				entity *e = *i;
-				e->update();
-				e->anim.update();
-        if(e->name == "bullet"){
-          if(e->count > 100)
-            e->isAlive = 0;
+        entity *b = *i;
+				b->update();
+				b->anim.update();
+        if(b->name == "bullet"){
+          if(b->count > 100)
+            b->isAlive = 0;
+
           else
-            e->count++;
+            b->count++;
         }
 				if (e->isAlive==false) {
 					i=entities.erase(i);
 					delete e;
-          if(e->name == "head"){
-            lifeleft--;
+          if(e->name == "head" || e->name == "bosshead"){
+            std::cout << "head position" << e->x <<std::endl;
+            if(e->x > 1700 || e->x > 4.5e-41 ){
+              lifeleft--;}
+
             // ##############################################
             // remember to remove this for full game
             bank += 100;

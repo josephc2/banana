@@ -58,3 +58,63 @@ class head: public entity{
 			}
 		}
 };
+class bosshead: public entity{
+			public:
+				int moveMode = 0;
+				bosshead(){
+					dx = 4;
+					dy = 0;
+					name = "head";
+				}
+
+				void update(){
+					x+=dx;
+					y+=dy;
+					if(x > 1700){
+						isAlive = 0;
+					}
+					//std::cout << "moveMode is " << moveMode << std::endl;
+					//first straight path, go up
+					if(moveMode == 0){
+						if(x > 500){
+							dx = 0;
+							dy = -4;
+							moveMode = 1;
+						}
+					}
+					if(moveMode == 1){
+						if(y < 350){
+							dx = 4;
+							dy = 0;
+							moveMode = 2;
+						}
+					}
+					if(moveMode == 2){
+						if(x > 875){
+							dx = 0;
+							dy = 4;
+							moveMode = 3;
+						}
+					}
+					if(moveMode == 3){
+						if(y > 760){
+							dx = 4;
+							dy = 0;
+							moveMode = 4;
+						}
+					}
+					if(moveMode == 4){
+						if(x > 1400){
+							dx = 0;
+							dy = -4;
+							moveMode = 5;
+						}
+					}
+					if(moveMode == 5){
+						if(y < 550){
+							dx = 4;
+							dy = 0;
+						}
+					}
+				}
+};
