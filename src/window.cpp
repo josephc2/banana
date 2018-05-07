@@ -1,28 +1,6 @@
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <list>
+#include "utils.cpp"
 
-#include "animation.cpp"
-#include "entity.cpp"
-#include "head.cpp"
-#include "turret.cpp"
-#include "bullet.cpp"
-
-#define MAX_X 1920
-#define MAX_Y 1080
-#define X_OFFSET 240
-#define Y_OFFSET 135
-#define X_BULLET 20
-#define Y_BULLET 60
-
-bool isCollide(entity *a,entity *b){
-  return (b->x+X_BULLET - a->x)*(b->x+X_BULLET - a->x)+
-         (b->y+Y_BULLET - a->y)*(b->y+Y_BULLET - a->y)<
-         (a->R + b->R)*(a->R + b->R);
-}
-
-int main()
-{
+int main(){
 	sf::RenderWindow window(sf::VideoMode(MAX_X, MAX_Y), "Banana Defense", sf::Style::Close | sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
@@ -62,19 +40,6 @@ int main()
 	animation sBossHead(t6, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
 	animation sTurretPlaced(t1, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
   animation sBullet(t8, 0, 0, MAX_X/4, MAX_Y/4, 10000, 0.00001);
-
-	std::list<entity*> entities;
-	bool gameStart=false;
-	bool gamePause=true;
-	bool isMove=false;
-	float dx=0, dy=0;
-	int count = 0;
-	int numHeads = 0;
-	int waveMode = 0;
-  int bulletShoot = 0;
-	int liveCheck = 0;
-	int lifeleft = 10;
-  int bank = 100;
 
 	// run the program as long as the window is open
 	while (window.isOpen()){
@@ -144,9 +109,8 @@ int main()
                 b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 20);
               if (bulletShoot == 5)
                 b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, -2, 20);
-              if (bulletShoot == 6)
+              if (bulletShoot == 6){
                 b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, -2, 20);
-              if (bulletShoot == 7){
                 bulletShoot = 0;
               }
               entities.push_back(b);
@@ -257,7 +221,7 @@ int main()
 				}
 				//std::cout << "Live check " << liveCheck << std::endl;
 				if(liveCheck == 0){
-					std::cout << "Wave" << waveMode << "cleared" << std::endl;
+					std::cout << "Wave " << waveMode << " cleared!" << std::endl;
 					liveCheck = 0;
 					count = 0;
 					numHeads = 0;
