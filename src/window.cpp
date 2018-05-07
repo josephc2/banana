@@ -10,13 +10,14 @@
 
 #define MAX_X 1920
 #define MAX_Y 1080
-
 #define X_OFFSET 240
 #define Y_OFFSET 135
+#define X_BULLET 20
+#define Y_BULLET 60
 
 bool isCollide(entity *a,entity *b){
-  return (b->x - a->x)*(b->x - a->x)+
-         (b->y - a->y)*(b->y - a->y)<
+  return (b->x+X_BULLET - a->x)*(b->x+X_BULLET - a->x)+
+         (b->y+Y_BULLET - a->y)*(b->y+Y_BULLET - a->y)<
          (a->R + b->R)*(a->R + b->R);
 }
 
@@ -129,24 +130,23 @@ int main()
       // make thing go shoot
       for(auto e:entities)
           if(e->name == "turret"){
-            if(e->count % 30 == 0){
+            if(e->count % 50 == 0){
               bullet *b = new bullet();
               if (bulletShoot == 0)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 0, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 20);
               if (bulletShoot == 1)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, 2, 20);
               if (bulletShoot == 2)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, 2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, 2, 20);
               if (bulletShoot == 3)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 2, 20);
               if (bulletShoot == 4)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, 0, 20);
               if (bulletShoot == 5)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, -2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, -2, -2, 20);
               if (bulletShoot == 6)
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, -2, 10);
+                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 0, -2, 20);
               if (bulletShoot == 7){
-                b->settings(sBullet, e->x - X_OFFSET/2, e->y - Y_OFFSET, 2, -2, 10);
                 bulletShoot = 0;
               }
               entities.push_back(b);
@@ -162,7 +162,7 @@ int main()
 				if(numHeads < 5){
 					if(count % 75 == 0){
 						head *h = new head();
-						h->settings(sHead, 5, 650, 2, 0, 10);
+						h->settings(sHead, 5, 650, 2, 0, 40);
 						entities.push_back(h);
 						numHeads++;
 					}
@@ -175,9 +175,9 @@ int main()
 					if(count % 75 == 0){
 						head *h = new head();
 						if(numHeads % 6 == 0)
-							h->settings(sBossHead, 5, 650, 2, 0, 10);
+							h->settings(sBossHead, 5, 650, 5, 0, 40);
 						else
-							h->settings(sHead, 5, 650, 2, 0, 10);
+							h->settings(sHead, 5, 650, 2, 0, 40);
 						entities.push_back(h);
 						numHeads++;
 					}
@@ -189,7 +189,7 @@ int main()
         if(numHeads < 20){
 					if(count % 75 == 0){
 						head *h = new head();
-						h->settings(sHead, 5, 650, 2, 0, 10);
+						h->settings(sHead, 5, 650, 2, 0, 40);
 						entities.push_back(h);
 						numHeads++;
 					}
@@ -203,6 +203,7 @@ int main()
             if(isCollide(a,b)){
               a->isAlive=0;
               b->isAlive=0;
+              bank += 100;
             }
         }
 
@@ -216,15 +217,11 @@ int main()
           else
             e->count++;
         }
-				if (e->isAlive==false) {
+				if(e->isAlive==false){
 					i=entities.erase(i);
 					delete e;
-          if(e->name == "head"){
+          if(e->name == "head" && e->x > 1695){
             lifeleft--;
-            // ##############################################
-            // remember to remove this for full game
-            bank += 100;
-            // #############################################
             std::cout << "You have " << lifeleft << "lives left" << std::endl;
           }
 				}
