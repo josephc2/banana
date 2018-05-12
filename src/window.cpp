@@ -232,6 +232,10 @@ int main(){
 					std::cout << "You lose!" << std::endl;
 					window.close();
 				}
+				if(waveMode > 3){
+					std::cout << "You won!" << std::endl;
+					window.close();
+				}
 			}
 		}
 	}
